@@ -1,44 +1,98 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-function ProductList() {
-  // dummy data for testing
-  const dummyProducts = [
-    {
-      _id: '1',
-      productName: 'Tomato',
-      productType: 'Crops',
-      productPrice: 2.5,
-      productDescription: 'Fresh tomatoes from local farms',
-      productQuantity: 100,
-    },
-    {
-      _id: '2',
-      productName: 'Chicken',
-      productType: 'Poultry',
-      productPrice: 8,
-      productDescription: 'Organic free-range chicken',
-      productQuantity: 50,
-    },
+const ProductListing = ({ products = [], onAddProduct, onDeleteProduct }) => {
+  const [formData, setFormData] = useState({
+    productName: '',
+    productType: '',
+    productPrice: '',
+    productDescription: '',
+    productQuantity: '',
+    editIndex: null,
+  });
 
-  ];
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleAddProduct = () => {
+    if (
+      !formData.productName ||
+      !formData.productType ||
+      !formData.productPrice ||
+      !formData.productDescription ||
+      !formData.productQuantity
+    ) {
+      alert('Please fill all fields');
+      return;
+    }
+
+    const newProduct = {
+      productName: formData.productName,
+      productType: formData.productType,
+      productPrice: formData.productPrice,
+      productDescription: formData.productDescription,
+      productQuantity: formData.productQuantity,
+    };
+
+    onAddProduct(newProduct);
+
+    setFormData({
+      productName: '',
+      productType: '',
+      productPrice: '',
+      productDescription: '',
+      productQuantity: '',
+      editIndex: null,
+    });
+  };
+
+  const handleEditProduct = (index) => {
+    const productToEdit = products[index];
+    setFormData({
+      ...productToEdit,
+      editIndex: index,
+    });
+  };
 
   return (
     <div>
-      <h2>Product Listings</h2>
-      <div className="product-list">
-        {dummyProducts.map(product => (
-          <div key={product._id} className="product-card">
-            <h3>{product.productName}</h3>
-            <p>Type: {product.productType}</p>
-            <p>Price: ${product.productPrice}</p>
-            <p>Description: {product.productDescription}</p>
-            <p>Quantity Available: {product.productQuantity}</p>
-            <button>Add Product</button>
-          </div>
+      <h2>Product Listing</h2>
+      <ul>
+        {products.map((product, index) => (
+          <li key={index}>
+            <div>
+              <strong>Name: </strong> {product.productName}
+            </div>
+            <div>
+              <strong>Type: </strong> {product.productType}
+            </div>
+            <div>
+              <strong>Price: </strong> {product.productPrice}
+            </div>
+            <div>
+              <strong>Description: </strong> {product.productDescription}
+            </div>
+            <div>
+              <strong>Quantity: </strong> {product.productQuantity}
+            </div>
+            <div>
+              <button onClick={() => onDeleteProduct(index)}>Delete</button>
+              <button onClick={() => handleEditProduct(index)}>Edit</button>
+            </div>
+          </li>
         ))}
-      </div>
+      </ul>
+
+      <h3>{formData.editIndex !== null ? 'Edit Product' : 'Add New Product'}</h3>
+      <input type="text" name="productName" placeholder="Product Name" value={formData.productName} onChange={handleChange} />
+      <input type="text" name="productType" placeholder="Product Type" value={formData.productType} onChange={handleChange} />
+      <input type="number" name="productPrice" placeholder="Product Price" value={formData.productPrice} onChange={handleChange} />
+      <input type="text" name="productDescription" placeholder="Product Description" value={formData.productDescription} onChange={handleChange} />
+      <input type="number" name="productQuantity" placeholder="Product Quantity" value={formData.productQuantity} onChange={handleChange} />
+      <button onClick={handleAddProduct}>{formData.editIndex !== null ? 'Update Product' : 'Add Product'}</button>
     </div>
   );
-}
+};
 
-export default ProductList;
+export default ProductListing;
