@@ -1,4 +1,4 @@
-import { placeOrder } from './controller/OrderController.js';
+import { placeOrder, removeOrder, getOrders } from './controller/OrderController.js';
 import { getProducts, addProduct, updateProductQuantity } from './controller/ProductController.js';
 import { registerUser, loginUser, getUsers } from './controller/UserController.js';
 
@@ -10,4 +10,6 @@ export default function registerRoutes(app) {
   app.post('/api/products', addProduct);
   app.put('/api/products/:id', updateProductQuantity);
   app.post('/api/orders', placeOrder);
+  app.get('/api/orders', getOrders);
+  app.delete('/api/orders/:transactionID', removeOrder);
 }
