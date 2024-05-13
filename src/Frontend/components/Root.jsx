@@ -39,6 +39,7 @@ export default function Root() {
                                 <>
                                     <li><Link to={`/login`}>Log In</Link></li>
                                     <li><Link to={`/signup`}>Sign Up</Link></li>
+                                    <li><Link to={`/dashboard`}>Dashboard</Link></li>
                                 </>
                             )}
                         </>

@@ -9,6 +9,7 @@ import SignUp from './Frontend/pages/Signup';
 import Orders from './Frontend/pages/Orders';
 import Account from './Frontend/pages/Account';
 import Cart from './Frontend/pages/Cart';
+import Dashboard from './Frontend/pages/Dashboard';
 import './index.css'
 
 const isUserSignedIn = !!localStorage.getItem('token')
@@ -21,7 +22,8 @@ const router = createBrowserRouter([
     { path: 'account', element: isUserSignedIn ? <Account /> : null },
     { path: 'cart', element: isUserSignedIn ? <Cart /> : null },
     { path: 'orders', element: isUserSignedIn ? <Orders /> : null },
-    { path: 'shop', element: isUserSignedIn ? <Shop /> : null }
+    { path: 'shop', element: isUserSignedIn ? <Shop /> : null },
+    { path: 'dashboard', element: <Dashboard /> }
   ]}
 ])
 

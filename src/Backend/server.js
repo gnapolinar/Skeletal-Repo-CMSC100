@@ -6,7 +6,7 @@ import bodyParser from 'body-parser';
 import registerRoutes from './route.js';
 
 const app = express();
-const dbURI = 'mongodb+srv://edreyes7:TestingTesting@cluster0.mi9lto4.mongodb.net/FarmToTableDatabase?retryWrites=true&w=majority&appName=Cluster0';
+const dbURI = 'mongodb://localhost:27017';
 const PORT = 4000;
 
 app.use(bodyParser.json());
