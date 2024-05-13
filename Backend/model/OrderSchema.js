@@ -5,6 +5,7 @@ const orderSchema = new mongoose.Schema({
     productID: { type: String, required: true },
     orderQty: { type: Number, required: true },
     orderStatus: { type: Number, required: true },
+    orderPrice: { type: Number, required: true },
     email: { type: String, required: true },
     dateOrdered: { type: Date, default: Date.now }
 }, { collection: 'Orders' });
