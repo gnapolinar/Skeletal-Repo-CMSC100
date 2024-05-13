@@ -5,7 +5,7 @@ import axios from 'axios'
 const LogIn = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error] = useState('')
+  const [error, setError] = useState('')
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -20,20 +20,22 @@ const LogIn = () => {
   }
 
   const handleLogin = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:4000/api/login', { email, password })
-      const token = response.data.token
-      setEmail('')
-      setPassword('')
-      fetchUsers()
-      navigate('/shop')
-      window.location.reload()
-      localStorage.setItem('token', token)
+      const response = await axios.post('http://localhost:4000/api/login', { email, password });
+      const { token, userType } = response.data;
+      setEmail('');
+      setPassword('');
+      localStorage.setItem('token', token);
+      localStorage.setItem('email', email);
+      localStorage.setItem('userType', userType);
+      fetchUsers();
+      navigate(userType === 'merchant' ? '/dashboard' : '/shop');
     } catch (error) {
-      console.log('Login error')
+      setError('Invalid email or password');
     }
-  }
+  };
+  
 
   return (
     <div>
@@ -46,7 +48,7 @@ const LogIn = () => {
           <br />
           <label>Password:</label>
           <br />
-          <input type="text" value={password} placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
+          <input type="password" value={password} placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
           <br />
           <br />
           <button onClick={handleLogin}>Log In</button>
