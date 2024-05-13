@@ -6,7 +6,7 @@ import bodyParser from 'body-parser';
 import registerRoutes from './route.js';
 
 const app = express();
-const dbURI = 'mongodb://localhost:27017';
+const dbURI = 'mongodb://localhost:27017/FarmToTableDatabase';
 const PORT = 4000;
 
 app.use(bodyParser.json());
