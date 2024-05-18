@@ -11,6 +11,8 @@ import Account from './pages/Account';
 import Cart from './pages/Cart';
 import Dashboard from './pages/Dashboard';
 import MerchantOrders from './pages/Orders_MerchantView'
+import SalesReports from './pages/SalesReport';
+import ManageUsers from './pages/ManageUsers';
 import './index.css';
 
 const isUserSignedIn = !!localStorage.getItem('token');
@@ -58,7 +60,9 @@ const router = createBrowserRouter([
       { path: 'cart', element: isUserSignedIn && userType === 'customer' ? <Cart cartItems={getCartItems()} /> : null },
       { path: 'orders', element: isUserSignedIn && userType === 'customer' ? <Orders /> : null },
       { path: 'shop', element: isUserSignedIn && userType === 'customer' ? <Shop addToCart={addToCart} /> : null },
-      { path: 'merchantorders', element: isUserSignedIn && userType === 'merchant' ? <MerchantOrders /> : null }
+      { path: 'manageusers', element: isUserSignedIn && userType === 'merchant' ? <ManageUsers /> : null },
+      { path: 'merchantorders', element: isUserSignedIn && userType === 'merchant' ? <MerchantOrders /> : null },
+      { path: 'salesreports', element: isUserSignedIn && userType === 'merchant' ? <SalesReports /> : null }
     ]
   }
 ]);

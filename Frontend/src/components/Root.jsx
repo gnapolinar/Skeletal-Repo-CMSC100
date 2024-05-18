@@ -60,7 +60,10 @@ export default function Root() {
                         {localStorage.getItem('userType') === 'merchant' && (
                         <>
                             <li><Link to={`/dashboard`}>Dashboard</Link></li>
+                            <li><Link to={`/manageusers`}>Users</Link></li>
                             <li><Link to={`/merchantorders`}>Orders</Link></li>
+                            <li><Link to={`/salesreports`}>Sales Report</Link></li>
+                            
                         </>
                         )}
                     </>
