@@ -64,3 +64,27 @@ export const getUsers = async (req, res) => {
     res.json({ message: 'Server Error' });
   }
 };
+
+
+export const deleteUser = async (req, res) => {
+  try {
+    const { email } = req.params.email;
+
+    // Find the user by email
+    const user = await User.findOne({ email });
+
+    // If user not found, return 404
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Delete the user
+    await User.deleteOne({ email });
+
+    res.json({ message: 'User deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting user:', err);
+    res.status(500).json({ message: 'Error deleting user' });
+  }
+};
+

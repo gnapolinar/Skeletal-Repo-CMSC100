@@ -13,8 +13,8 @@ export const placeOrder = async (req, res) => {
         const saveTasks = [];
 
         for (const item of req.body) {
-            const { productID, orderQty, email } = item;
-            if (!productID || !orderQty || !email) {
+            const { productID, orderQty, email, productName } = item;
+            if (!productID || !orderQty || !email || !productName) {
                 return res.status(400).json({ message: 'Missing required fields for an item.' });
             }
 
@@ -27,6 +27,7 @@ export const placeOrder = async (req, res) => {
             const newOrder = new Order({
                 transactionID: uuidv4(),
                 productID,
+                productName,
                 orderQty,
                 orderStatus: 0,
                 email,
@@ -71,4 +72,81 @@ export const getOrders = async (req, res) => {
         console.error('Error getting orders:', err);
         res.status(500).json({ message: 'Server Error' });
     }
+};
+
+export const updateOrder = async (req, res) => {
+    const { transactionID } = req.params;
+    const { orderStatus } = req.body;
+
+    try {
+        const updatedOrder = await Order.findOneAndUpdate(
+        { transactionID },
+        { $set: { orderStatus } },
+        { new: true }
+        );
+
+        if (!updatedOrder) {
+        return res.status(404).json({ error: 'Order not found' });
+        }
+
+        res.json(updatedOrder);
+    } catch (err) {
+        console.error('Error updating order:', err);
+        res.status(500).json({ error: 'Failed to update order' });
+    }
+}
+// Sales report route
+export const salesReport = async (req, res) => {
+    try {
+        const orders = await Order.find({ orderStatus: 2 }); // Delivered orders
+        const weeklyReport = generateSalesReport(orders, 'week');
+        const monthlyReport = generateSalesReport(orders, 'month');
+        const annualReport = generateSalesReport(orders, 'year');
+        res.json({ weeklyReport, monthlyReport, annualReport });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const generateSalesReport = (orders, period) => {
+    const report = orders.reduce((acc, order) => {
+        const date = new Date(order.dateOrdered);
+        let periodKey;
+
+        if (period === 'week') {
+            const weekNumber = getWeekOfMonth(date);
+            periodKey = `w${weekNumber}-${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+        } else if (period === 'month') {
+            periodKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+        } else if (period === 'year') {
+            periodKey = `${date.getFullYear()}`;
+        }
+
+        if (!acc[periodKey]) {
+            acc[periodKey] = { totalSales: 0, products: {} };
+        }
+
+        acc[periodKey].totalSales += order.orderQty * order.orderPrice;
+        if (!acc[periodKey].products[order.productID]) {
+            acc[periodKey].products[order.productID] = {
+                productName: order.productName,
+                totalQtySold: 0,
+                totalRevenue: 0
+            };
+        }
+
+        acc[periodKey].products[order.productID].totalQtySold += order.orderQty;
+        acc[periodKey].products[order.productID].totalRevenue += order.orderQty * order.orderPrice;
+
+        return acc;
+    }, {});
+
+    return report;
+};
+
+const getWeekOfMonth = (date) => {
+    const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    const dayOfMonth = date.getDate();
+    const dayOfWeek = startOfMonth.getDay();
+    return Math.ceil((dayOfMonth + dayOfWeek) / 7);
 };
